@@ -4,6 +4,8 @@ const cors = require("cors");
 const { createClient } = require("@supabase/supabase-js");
 const multer = require("multer");
 const path = require("path");
+const https = require("https");
+const fs = require("fs");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -2222,6 +2224,17 @@ app.post("/api/author/withdraw", verifyUser, async (req, res) => {
 });
 
 // Start Server
-app.listen(port, () => {
-  console.log(`Lumina Server running on port ${port}`);
+const options = {
+  key: fs.readFileSync(
+    "/etc/letsencrypt/live/srv1202611.hstgr.cloud/privkey.pem"
+  ),
+  cert: fs.readFileSync(
+    "/etc/letsencrypt/live/srv1202611.hstgr.cloud/fullchain.pem"
+  ),
+};
+
+https.createServer(options, app).listen(port, () => {
+  console.log(
+    `Lumina Server running on https://srv1202611.hstgr.cloud:${port}`
+  );
 });
